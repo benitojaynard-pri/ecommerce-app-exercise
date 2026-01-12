@@ -3,6 +3,8 @@ import Counter from "./components/Counter";
 import "bootstrap/dist/css/bootstrap.css";
 import Counters from "./components/Counters";
 import NavBar from "./components/NavBar";
+import products from "./components/Products";
+import Main from "./Main";
 
 // export default class App extends Component {
 //   state = {
@@ -70,73 +72,34 @@ import NavBar from "./components/NavBar";
 //   }
 // }
 
-const App = () => {
-  const [counters, setCounters] = useState([
-    { id: 1, value: 0 },
-    { id: 2, value: 0 },
-    { id: 3, value: 0 },
-  ]);
-  const [paymentPage, setPaymentPage] = useState(false);
+function App() {
+  const [cartItems, setCartItems] = useState([]);
 
-  const handleDelete = (id) => {
-    setCounters((prevState) =>
-      prevState.filter((counter) => counter.id !== id)
-    );
-  };
-
-  const handleIncrement = (id) => {
-    setCounters((prevState) =>
-      prevState.map((counter) => {
-        if (counter.id === id) {
-          return { ...counter, value: counter.value + 1 };
-        }
-        return counter;
-      })
-    );
-  };
-
-  const handleDecrement = (id) => {
-    setCounters((prevState) =>
-      prevState.map((counter) => {
-        if (counter.id === id) {
-          return { ...counter, value: counter.value - 1 };
-        }
-        return counter;
-      })
-    );
-  };
-
-  const handleTogglePage = () => {
-    setPaymentPage((prevState) => !prevState);
-  };
-
-  const getCountersWithValueLength = () => {
-    return counters.filter((counter) => counter.value > 0).length;
+  // This is the function you will pass to your Product components
+  const onAdd = (product) => {
+    const exist = cartItems.find((x) => x.id === product.id);
+    if (exist) {
+      setCartItems(
+        cartItems.map((x) =>
+          x.id === product.id ? { ...exist, qty: exist.qty + 1 } : x
+        )
+      );
+    } else {
+      setCartItems([...cartItems, { ...product, qty: 1 }]);
+    }
   };
 
   return (
-    <div>
-      <NavBar
-        onTogglePage={handleTogglePage}
-        totalCount={getCountersWithValueLength()}></NavBar>
-
-      {paymentPage ? (
-        <div>
-          <h1>Payment Page</h1>
-        </div>
-      ) : (
-        <div className="container">
-          <Counters
-            counters={counters}
-            onIncrement={handleIncrement}
-            onDecrement={handleDecrement}
-            onDelete={handleDelete}>
-            Hello
-          </Counters>
-        </div>
-      )}
+    <div className="App">
+      {/* Pass the total count to Navbar */}
+      <NavBar countCartItems={cartItems.length} />
+      
+      <div className="row">
+        {/* Pass the products data and the onAdd function to your Main component */}
+        <Main products={products} onAdd={onAdd} />
+      </div>
     </div>
   );
-};
+}
 
 export default App;

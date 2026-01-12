@@ -30,11 +30,8 @@ export default class Counter extends Component {
   }
 
   getClassName() {
-    if (this.props.counter.value > 0) {
-      return "badge bg-primary";
-    } else {
-      return "badge bg-warning text-dark";
-    }
+    const { value } = this.props.counter; // If this.props.counter is missing, it crashes here!
+    return value === 0 ? "badge-warning" : "badge-primary";
   }
 
   renderTags() {
@@ -50,36 +47,29 @@ export default class Counter extends Component {
   }
 
   render() {
-    console.log("props", this.props);
+    const { image, title, price, description } = this.props.counter;
+  
     return (
-      <>
-        <div className="m-4">
-          <span className={this.getClassName()}>{this.formatText()}</span>
-          <button
-            disabled={this.props.counter.value == 0}
-            onClick={() => this.props.onDecrement(this.props.counter.id)}
-            className="btn btn-primary ms-4">
-            -
-          </button>
-          <button
-            onClick={() => this.props.onIncrement(this.props.counter.id)}
-            className="btn btn-secondary ms-1">
-            +
-          </button>
-          <button
-            onClick={() => this.props.onDelete(this.props.counter.id)}
-            className="btn btn-danger ms-1">
-            Delete
-          </button>
+      <div className="product-card">
+        <img src={image} alt={title} className="product-image" />
+        
+        <div className="product-info">
+          <div className="product-title">{title}</div>
+          <div className="product-price">P{price}</div>
+          <div className="product-description">{description}</div>
+          
+          {/* Your Buttons Section */}
+          <div className="d-flex justify-content-between align-items-center">
+               {/* Add your existing counter buttons here */}
+               <button 
+                  className="btn btn-primary btn-sm" 
+                  onClick={() => this.props.onAdd(this.props.counter)}
+               >
+                 ADD TO CART
+               </button>
+          </div>
         </div>
-        {/* {this.getName()} */}
-        {/* {this.renderTags()} */}
-        {/* <img src={this.state.image}></img> */}
-        {/* <div>Name: {this.state.name}</div> */}
-        {/* <div>Counter: {this.state.count}</div> */}
-        {/* <div>Counter: {this.state.count2}</div>
-        <button onClick={() => this.increment2()}>Increment</button> */}
-      </>
+      </div>
     );
   }
 }
