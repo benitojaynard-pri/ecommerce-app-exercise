@@ -7,7 +7,6 @@ import Main from "./Main";
 import Basket from "./Basket";
 
 function App() {
-  // DECLARE ONCE AT THE TOP
   const [cartItems, setCartItems] = useState([]);
 
   const onAdd = (product) => {
@@ -43,18 +42,14 @@ function App() {
         <Routes>
           <Route path="/" element={
             <Main 
-            products={products} 
-            onAdd={onAdd} 
-            onRemove={onRemove} // Ensure this is passed!
-            cartItems={cartItems} // Ensure this is passed!
-          />
-          }/>
-          <Route path="/cart" element={
-            <Basket 
-              cartItems={cartItems} 
+              products={products} 
               onAdd={onAdd} 
               onRemove={onRemove} 
+              cartItems={cartItems} 
             />
+          } />
+          <Route path="/cart" element={
+            <Basket cartItems={cartItems} onAdd={onAdd} onRemove={onRemove} />
           } />
         </Routes>
       </div>
