@@ -46,7 +46,7 @@ export default function Basket({ cartItems, onAdd, onRemove }) {
           {/* Subtotal Section matching your second screenshot */}
           <div className="row mt-4 border-top pt-3">
             <div className="col-12 d-flex justify-content-end align-items-center">
-              <h4 className="text-secondary me-5 mb-0">Subtotal</h4>
+              <h4 className="text-secondary me-5 mb-0">Subtotals</h4>
               <h4 className="fw-bold mb-0">P{itemsPrice.toFixed(2)}</h4>
             </div>
           </div>
