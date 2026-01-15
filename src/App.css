@@ -53,3 +53,19 @@
   margin-bottom: 15px;
 }
 
+.quantity-control-container {
+  display: flex;
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Optional: Make the buttons look exactly like the screenshot */
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
