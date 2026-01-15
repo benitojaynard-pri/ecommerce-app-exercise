@@ -19,7 +19,7 @@ export default function Basket({ cartItems, onAdd, onRemove }) {
           </tr>
         </thead>
         <tbody>
-          {cartItems.length === 0 && <tr><td colSpan="4">Cart is empty</td></tr>}
+          {cartItems.length === 0 && <tr><td colSpan="4">Cart are empty</td></tr>}
           {cartItems.map((item) => (
             <tr key={item.id}>
               <td>{item.title}</td>
