@@ -1,40 +1,62 @@
 import React from 'react';
 
-
-  const Counter = ({ counter, onAdd, onRemove, quantity }) => {
-    // 1. Add this check to prevent the "undefined" error
-    if (!counter) return null; 
-
-    const truncate = (text, limit) => {
-      return text ? (text.length > limit ? text.substring(0, limit) + "..." : text) : "";
-    };
+const Counter = ({ counter, onAdd, onRemove, quantity }) => {
+  const truncate = (text, limit) => {
+    return text.length > limit ? text.substring(0, limit) + "..." : text;
+  };
 
   return (
-    <div className="card h-100 shadow-sm border-0 product-card">
+    <div className="card h-100 shadow-sm border-0">
       <img 
-        src={Counter.image} 
-        className="card-img-top p-3" 
+        src={counter.image} 
         alt={counter.title} 
-        style={{ height: "180px", objectFit: "contain" }}
+        className="card-img-top p-3" 
+        style={{ height: "180px", objectFit: "contain" }} 
       />
       <div className="card-body d-flex flex-column">
-        <h6 className="card-title fw-bold">{truncate(counter.title, 35)}</h6>
+        <h6 className="card-title fw-bold" style={{ minHeight: "40px" }}>
+          {truncate(counter.title, 40)}
+        </h6>
         <p className="card-text text-muted mb-1">P{counter.price}</p>
-        
-        {/* Truncated description for uniform card height */}
-        <p className="card-text small text-secondary mb-3" style={{ fontSize: "0.8rem" }}>
+        <p className="card-text small text-secondary" style={{ height: "60px", overflow: "hidden" }}>
           {truncate(counter.description, 80)}
         </p>
         
-        <div className="mt-auto">
-          {/* Add to Cart Button */}
-          <button 
-            className="btn btn-outline-primary btn-sm w-100"
-            onClick={() => onAdd(counter)}
-          >
-            ADD TO CART
-          </button>
-        </div>
+        <div className="mt-auto" style={{ width: "100%" }}>
+  {quantity > 0 ? (
+    <div className="d-flex align-items-center justify-content-between gap-1 w-100">
+      {/* Minus Button: Grows to fill space */}
+      <button 
+        onClick={() => onRemove(counter)} 
+        className="btn btn-primary btn-sm fw-bold flex-grow-1"
+        style={{ borderRadius: '4px' }}
+      >
+        -
+      </button>
+    
+      {/* Quantity Display: Fixed width so buttons do the scaling */}
+      <div 
+        className="border-0 rounded bg-white text-dark fw-bold flex-grow-1" 
+        style={{textAlign: 'center' }}
+      >
+        {quantity}
+      </div>
+    
+      {/* Plus Button: Grows to fill space */}
+      <button 
+        onClick={() => onAdd(counter)} 
+        className="btn btn-primary btn-sm fw-bold flex-grow-1"
+        style={{ borderRadius: '4px'}}
+      >
+        +
+      </button>
+    </div>
+  ) : (
+    <button className="btn btn-outline-primary btn-sm w-100" onClick={() => onAdd(counter)}>
+      <i className="fa fa-shopping-cart me-2"></i> ADD TO CART
+    </button>
+  )}
+</div>
       </div>
     </div>
   );
