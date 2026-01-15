@@ -1,19 +1,18 @@
 import React from 'react';
 import Counter from './components/Counter'; 
 
-export default function Main(props) {
-  const { products, onAdd } = props;
-
+export default function Main({ products, onAdd }) {
   return (
-    <main className="container mt-4">
-      {/* 1. Use the 'row' class to create a grid container */}
+    <main className="container">
+      <h2 className="mb-4">Products</h2>
+      {/* 'row' acts as the flex container */}
       <div className="row">
         {products && products.map((item) => (
-          /* 2. col-md-3 means 4 items per row on medium screens (12 / 3 = 4) */
-          <div key={item.id} className="col-md-3 mb-4">
+          /* 'col-md-3' ensures 4 items per row on desktop */
+          <div key={item.id} className="col-12 col-sm-6 col-md-3 mb-4">
             <Counter 
               counter={item} 
-              onAdd={() => onAdd(item)} 
+              onAdd={onAdd} 
             />
           </div>
         ))}

@@ -1,75 +1,40 @@
-import React, { Component } from "react";
+import React from 'react';
 
-export default class Counter extends Component {
-  // props
+const Counter = ({ counter, onAdd }) => {
+  // Logic to keep the UI clean
+  const truncate = (text, limit) => {
+    return text.length > limit ? text.substring(0, limit) + "..." : text;
+  };
 
-  // this.props - from parent down here
-
-  //   name = "Hello World";
-  //   state = {
-  //     name: "Hello Wolrd",
-  //     image: "http://picsum.photos/200",
-  //     // count: 0,
-  //     count2: 1,
-  //     tags: ["tag1", "tag2", "tag3"],
-  //   };
-
-  constructor() {
-    super();
-  }
-
-  getName() {
-    return <h1>Big Name</h1>;
-  }
-
-  formatText() {
-    if (this.props.counter.value > 0) {
-      return this.props.counter.value;
-    }
-    return "Zero";
-  }
-
-  getClassName() {
-    const { value } = this.props.counter; // If this.props.counter is missing, it crashes here!
-    return value === 0 ? "badge-warning" : "badge-primary";
-  }
-
-  renderTags() {
-    return (
-      this.state.tags.length > 0 && (
-        <ul>
-          {this.state.tags.map((tag) => (
-            <li key={tag}>{tag}</li>
-          ))}
-        </ul>
-      )
-    );
-  }
-
-  render() {
-    const { image, title, price, description } = this.props.counter;
-  
-    return (
-      <div className="product-card">
-        <img src={image} alt={title} className="product-image" />
+  return (
+    <div className="card h-100 shadow-sm border-0 product-card">
+      <img 
+        src={counter.image} 
+        className="card-img-top p-3" 
+        alt={counter.title} 
+        style={{ height: "180px", objectFit: "contain" }}
+      />
+      <div className="card-body d-flex flex-column">
+        <h6 className="card-title fw-bold">{truncate(counter.title, 35)}</h6>
+        <p className="card-text text-muted mb-1">P{counter.price}</p>
         
-        <div className="product-info">
-          <div className="product-title">{title}</div>
-          <div className="product-price">P{price}</div>
-          <div className="product-description">{description}</div>
-          
-          {/* Your Buttons Section */}
-          <div className="d-flex justify-content-between align-items-center">
-               {/* Add your existing counter buttons here */}
-               <button 
-                  className="btn btn-primary btn-sm" 
-                  onClick={() => this.props.onAdd(this.props.counter)}
-               >
-                 ADD TO CART
-               </button>
-          </div>
+        {/* Truncated description for uniform card height */}
+        <p className="card-text small text-secondary mb-3" style={{ fontSize: "0.8rem" }}>
+          {truncate(counter.description, 80)}
+        </p>
+        
+        <div className="mt-auto">
+          {/* Add to Cart Button */}
+          <button 
+            className="btn btn-outline-primary btn-sm w-100"
+            onClick={() => onAdd(counter)}
+          >
+            ADD TO CART
+          </button>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+export default Counter;

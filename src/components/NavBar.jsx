@@ -1,31 +1,20 @@
-import React, { Component } from "react";
+import { Link } from 'react-router-dom';
 
-// export default class NavBar extends Component {
-//   render() {
-//     return (
-//       <nav className="navbar bg-body-tertiary">
-//         <div className="container-fluid">
-//           <span className="navbar-brand mb-0 h1">Navbar</span>
-//           <span className="badge bg-secondary ms-2">
-//             {this.props.totalCount}
-//           </span>
-//         </div>
-//       </nav>
-//     );
-//   }
-// }
-
-const NavBar = ({ totalCount, onTogglePage }) => {
+const NavBar = ({ countCartItems }) => {
   return (
-    <nav className="navbar bg-body-tertiary">
-      <div className="container-fluid">
-        <span className="navbar-brand mb-0 h1">E Commerce</span>
-        <span onClick={onTogglePage} className="badge bg-secondary ms-2">
-          {totalCount}
-        </span>
+    <nav className="navbar navbar-dark bg-primary mb-4">
+      <div className="container">
+        <Link to="/" className="navbar-brand fw-bold">E-Commerce App</Link>
+        <Link to="/cart" className="btn btn-primary position-relative">
+          <i className="fa fa-shopping-cart"></i>
+          {countCartItems > 0 && (
+            <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {countCartItems}
+            </span>
+          )}
+        </Link>
       </div>
     </nav>
   );
 };
 
-export default NavBar
