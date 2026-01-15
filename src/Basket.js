@@ -6,7 +6,7 @@ export default function Basket({ cartItems, onAdd, onRemove }) {
 
   return (
     <div className="container mt-5">
-      <h2>Order Summary</h2>
+      <h2>Order Summaries</h2>
       <table className="table">
         <thead>
           <tr>
