@@ -4,10 +4,12 @@ import "bootstrap/dist/css/bootstrap.css";
 import NavBar from "./components/NavBar";
 import products from "./components/Products";
 import Main from "./Main";
-import Basket from "./Basket";
+import Basket from "./Basket"
+import { ProductModel } from "./models/product";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
+  console.log(ProductModel)
 
   const onAdd = (product) => {
     const exist = cartItems.find((x) => x.id === product.id);
