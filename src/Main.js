@@ -1,5 +1,5 @@
 import React from 'react';
-import Counter from './components/Counter'; // Adjust path if Counter is in the same folder
+import Counter from './client/components/Counter'; // Adjust path if Counter is in the same folder
 
 export default function Main({ products, onAdd, onRemove, cartItems }) {
   // Guard clause: If products are missing, show a message instead of a blank page

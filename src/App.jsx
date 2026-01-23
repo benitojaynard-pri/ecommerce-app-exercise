@@ -1,15 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.css";
-import NavBar from "./components/NavBar";
-import products from "./components/Products";
+import NavBar from "./client/components/NavBar";
+import products from "./client/components/Products";
 import Main from "./Main";
-import Basket from "./Basket"
-import { ProductModel } from "./models/product";
+import Basket from "./Basket";
+
 
 function App() {
+  // Inside your React Component
+const [products, setProducts] = useState([]);
+
+useEffect(() => {
+  fetch('http://localhost:5000/api/products')
+    .then(res => res.json())
+    .then(data => setProducts(data))
+    .catch(err => console.error("API Error:", err));
+}, []);
   const [cartItems, setCartItems] = useState([]);
-  console.log(ProductModel)
+  
 
   const onAdd = (product) => {
     const exist = cartItems.find((x) => x.id === product.id);
