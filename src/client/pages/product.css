@@ -1,0 +1,136 @@
+/* src/App.css */
+
+.product-detail-container {
+    padding: 40px;
+    max-width: 900px; /* Mas maliit para mas compact ang tingin */
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  .back-button {
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    cursor: pointer;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .edit-card {
+    display: flex;
+    gap: 30px; /* Space sa pagitan ng image at form */
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    align-items: flex-start; /* Para pantay ang taas sa simula */
+  }
+  
+  .image-preview-section {
+    flex: 1; /* Kumukuha ng saktong space lang */
+    text-align: center;
+  }
+  
+  .preview-image {
+    width: 100%; /* Susunod sa width ng image-preview-section */
+    max-width: 300px; /* Nilimitahan para hindi maging higante ang image */
+    border-radius: 8px;
+    margin-bottom: 10px;
+    object-fit: cover;
+  }
+  
+  .form-section {
+    flex: 2; /* Mas malawak ang form kaysa sa image */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .input-group label {
+    font-size: 14px;
+    color: #666;
+    font-weight: bold;
+  }
+  
+  .input-field, .textarea-field {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box; /* Sinisiguro na hindi lalampas ang input sa container */
+  }
+  
+  .save-button {
+    padding: 15px;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 10px;
+  }
+  
+  .save-button:hover {
+    background: #218838;
+  }
+  
+  .label-preview {
+    font-size: 14px;
+    color: #666;
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: column; /* Stacked vertical katulad ng Save button kanina */
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .delete-button {
+    padding: 15px;
+    background-color: #dc3545; /* Red color para sa danger */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.3s;
+  }
+  
+  .delete-button:hover {
+    background-color: #c82333;
+  }
+
+
+  .header-actions {
+    display: flex;
+    justify-content: flex-start; /* Upper Left */
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.add-main-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.add-main-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}

@@ -1,42 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import './product.css'; 
 
 function ProductDetail() {
   const { id } = useParams();
-  const navigate = useNavigate(); // Para makabalik sa listahan
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  
-
-  const styles = {
-    container: { padding: '40px', maxWidth: '900px', margin: '0 auto', fontFamily: 'Arial, sans-serif' },
-    backBtn: { marginBottom: '20px', padding: '10px 15px', cursor: 'pointer', background: '#f0f0f0', border: '1px solid #ccc', borderRadius: '5px' },
-    card: { display: 'flex', gap: '30px', background: '#fff', padding: '30px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' },
-    imageSection: { flex: '1', textAlign: 'center' },
-    previewImg: { width: '100%', borderRadius: '8px', marginBottom: '10px', objectFit: 'cover' },
-    formSection: { flex: '2', display: 'flex', flexDirection: 'column', gap: '15px' },
-    title: { margin: '0 0 20px 0', color: '#333' },
-    inputGroup: { display: 'flex', flexDirection: 'column', gap: '5px' },
-    label: { fontSize: '14px', color: '#666' },
-    input: { padding: '10px', borderRadius: '5px', border: '1px solid #ddd', fontSize: '16px' },
-    textarea: { padding: '10px', borderRadius: '5px', border: '1px solid #ddd', fontSize: '16px', resize: 'vertical' },
-    saveBtn: { padding: '15px', background: '#28a745', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '18px', marginTop: '10px' }
-  };
 
   useEffect(() => {
     fetch(`http://localhost:5001/api/products/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Hindi mahanap ang product");
-        return res.json();
-      })
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         setProduct(data);
         setLoading(false);
       })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
+      .catch(err => console.error(err));
   }, [id]);
 
   const handleInputChange = (e) => {
@@ -44,82 +23,129 @@ function ProductDetail() {
     setProduct({ ...product, [name]: value });
   };
 
-  // ProductDetailPage.jsx
-const handleSave = async (e) => {
-  e.preventDefault();
-
-  // I-construct ang object na match sa screenshot at sa backend schema
-  const dataToUpdate = {
+  const handleSave = async (e) => {
+    e.preventDefault();
+    const dataToUpdate = {
+      id: parseInt(id),
       name: product.name,
-      price: parseFloat(product.price), // Siguraduhing number ito para sa MySQL/Joi
+      price: parseFloat(product.price),
       image: product.image,
       description: product.description
-  };
+    };
 
-  try {
+    try {
       const response = await fetch(`http://localhost:5001/api/products/update/${id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(dataToUpdate), 
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToUpdate),
       });
 
-      const result = await response.json();
       if (response.ok) {
-          alert("Successfully updated!");
-          window.location.href = "/";
-      } else {
-          alert(`Error: ${result.message}`);
+        alert("✅ Saved!");
+        window.location.href = "/"; 
       }
-  } catch (err) {
-      console.error("Fetch Error:", err);
-      alert(" Failed to connect to server.");
-  }
+    } catch (err) {
+      alert("❌ Save failed.");
+    }
+  };
+
+  const handleDelete = async () => {
+    // Confirmation dialog
+    const confirmDelete = window.confirm("Are you sure to delete this product?");
+    
+    if (confirmDelete) {
+        try {
+            const response = await fetch(`http://localhost:5001/api/products/delete/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                alert("🗑️ Product deleted!");
+                window.location.href = "/"; 
+            } else {
+                alert("❌ Failed to delete product.");
+            }
+        } catch (err) {
+            console.error("Delete error:", err);
+            alert("❌ Error connecting to server.");
+        }
+    }
 };
 
-  if (loading) return <div className="loader">Loading details...</div>;
-  if (!product) return <div className="error">Product not found.</div>;
+  if (loading) return <div className="product-detail-container">Loading...</div>;
 
   return (
-    <div style={styles.container}>
-      <button onClick={() => navigate('/')} style={styles.backBtn}>← Back to Products</button>
+    <div className="product-detail-container">
+      <button className="back-button" onClick={() => navigate('/')}>
+        ← Back to Products
+      </button>
       
-      <div style={styles.card}>
-        <div style={styles.imageSection}>
-          <img src={product.image} alt={product.name} style={styles.previewImg} />
-          <p style={styles.label}>Image Preview</p>
+      <div className="edit-card">
+        {/* KALIWA: Image Section */}
+        <div className="image-preview-section">
+          <img src={product.image} alt={product.name} className="preview-image" />
+          <p className="label-preview">Image Preview</p>
         </div>
 
-        <form onSubmit={handleSave} style={styles.formSection}>
-          <h2 style={styles.title}>Edit Product Details</h2>
+        {/* KANAN: Form Section */}
+        <form className="form-section" onSubmit={handleSave}>
+          <h2>Edit Product Details</h2>
 
-          <div style={styles.inputGroup}>
+          <div className="input-group">
             <label>Product Name</label>
-            <input name="name" value={product.name} onChange={handleInputChange} style={styles.input} required />
+            <input 
+              name="name" 
+              className="input-field"
+              value={product.name} 
+              onChange={handleInputChange} 
+              required 
+            />
           </div>
 
-          <div style={styles.inputGroup}>
+          <div className="input-group">
             <label>Price ($)</label>
-            <input type="number" name="price" value={product.price} onChange={handleInputChange} style={styles.input} step="0.01" required />
+            <input 
+              type="number" 
+              name="price" 
+              className="input-field"
+              value={product.price} 
+              onChange={handleInputChange} 
+              step="0.01" 
+              required 
+            />
           </div>
 
-          <div style={styles.inputGroup}>
+          <div className="input-group">
             <label>Image URL</label>
-            <input name="image" value={product.image} onChange={handleInputChange} style={styles.input} />
+            <input 
+              name="image" 
+              className="input-field"
+              value={product.image} 
+              onChange={handleInputChange} 
+            />
           </div>
 
-          <div style={styles.inputGroup}>
+          <div className="input-group">
             <label>Description</label>
-            <textarea name="description" value={product.description} onChange={handleInputChange} style={styles.textarea} rows="5" />
+            <textarea 
+              name="description" 
+              className="textarea-field"
+              value={product.description} 
+              onChange={handleInputChange} 
+              rows="5"
+            />
           </div>
-
-          <button type="submit" style={styles.saveBtn}>Save Changes</button>
+          <div className="button-group">
+           <button type="submit" className="save-button">Save Changes</button>
+           <button type="button" className="delete-button" onClick={handleDelete}>
+           Delete Product
+           </button>
+          </div>
         </form>
       </div>
     </div>
   );
 }
 
-// Simple Inline CSS para mabilis mong makita ang resulta
-
-
 export default ProductDetail;
+     

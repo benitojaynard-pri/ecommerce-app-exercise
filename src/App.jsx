@@ -6,6 +6,7 @@ import Main from "./Main";
 import Basket from "./Basket";
 import ProductList from './client/pages/ProductList';
 import ProductDetail from './client/pages/ProductDetailPage';
+import AddProduct from "./client/pages/AddProduct";
 console.log("Checking Component:", ProductDetail);
 
 function App() {
@@ -65,7 +66,7 @@ useEffect(() => {
           <Route path="/cart" element={
             <Basket cartItems={cartItems} onAdd={onAdd} onRemove={onRemove} />
           } />
-           {/* <Route path="/" element={<ProductList />} /> */}
+           <Route path="/add-product" element={<AddProduct />} />
            <Route path="/product/:id" element={<ProductDetail/>} />
         </Routes>
       </div>

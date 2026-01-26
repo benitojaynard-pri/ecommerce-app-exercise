@@ -2,15 +2,19 @@ const express = require('express');
 const router = express.Router();
 const { sequelize, ProductModel } = require('../models/product'); 
 const Joi = require('joi');
-const app = express();
 
-// --- FORM VALIDATION SCHEMA ---
 const productValidationSchema = Joi.object({
-    id: Joi.number().optional(),
-    name: Joi.string().min(3).required(),
+    id: Joi.any().optional(),
+    name: Joi.string().min(3).max(255).required(),
     description: Joi.string().required(),
-    price: Joi.number().min(0).required(),
-    image: Joi.string().uri().required(),
+    price: Joi.number().precision(2).positive().required(),
+    category: Joi.string().optional(),
+    image: Joi.string().required(),
+    // Ginawang optional dahil may default values sa DB, 
+    // pero nilagyan ng validation para sa tamang data type
+    rate: Joi.number().min(0).max(5).default(0),
+    count: Joi.number().integer().min(0).default(0),
+    stock: Joi.number().integer().min(0).default(0)
 });
 
 // 1. GET ALL PRODUCTS
@@ -35,18 +39,38 @@ router.get('/', async (req, res) => {
   });
 
 // 2. ADD PRODUCT (with Validation)
-router.post('/add', async (req, res) => {
-    // Validate form data against schema
-    const { error } = productValidationSchema.validate(req.body);
-    if (error) return res.status(400).json({ message: error.details[0].message });
+// server/routes/productRoutes.js
 
-    const newProduct = new Product(req.body);
+router.post('/add', async (req, res) => {
+    // 1. I-validate ang request body
+    console.log('Body', req.body);
+    
+    const { error, value } = productValidationSchema.validate(req.body, { 
+        abortEarly: false // Ipakita lahat ng error, hindi lang yung una
+    });
+
+    if (error) {
+        // Kunin lahat ng validation messages at ibalik sa frontend
+        const errorMessages = error.details.map(detail => detail.message);
+        console.log('Body', req.body);
+        return res.status(400).json({ 
+            message: "Validation Failed", 
+            errors: errorMessages 
+        });
+    }
 
     try {
-        const savedProduct = await newProduct.save();
-        res.status(201).json(savedProduct);
+        // 2. Gamitin ang 'value' mula sa Joi (ito yung malinis na data na may defaults)
+        const newProduct = await ProductModel.create(value);
+        
+        console.log(`✅ Product created: ${newProduct.name}`);
+        res.status(201).json(newProduct);
     } catch (err) {
-        res.status(400).json({ message: "Error saving product", error: err.message });
+        console.error("❌ Database Error:", err);
+        res.status(500).json({ 
+            message: "Internal Server Error", 
+            error: err.message 
+        });
     }
 });
 
@@ -87,11 +111,18 @@ router.put('/update/:id', async (req, res) => {
 // 4. DELETE PRODUCT
 router.delete('/delete/:id', async (req, res) => {
     try {
-        const deletedProduct = await Product.findOneAndDelete({ id: req.params.id });
-        if (!deletedProduct) return res.status(404).json({ message: "Product not found" });
-        res.status(200).json({ message: "Product deleted successfully" });
+        const { id } = req.params;
+        const deleted = await ProductModel.destroy({
+            where: { id: id }
+        });
+
+        if (deleted) {
+            res.status(200).json({ message: "Product deleted successfully" });
+        } else {
+            res.status(404).json({ message: "Product not found" });
+        }
     } catch (err) {
-        res.status(500).json({ message: "Delete failed", error: err.message });
+        res.status(500).json({ error: err.message });
     }
 });
 

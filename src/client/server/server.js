@@ -17,6 +17,10 @@ app.use('/api/products/', ProductRoutes);
 // 3. Start Server
 app.listen(PORT, async () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
+
+  sequelize.sync({ alter: true }) // 'alter: true' ay mag-uupdate ng columns nang hindi binubura ang table
+  .then(() => console.log('Database synced & ID set to auto-increment'))
+  .catch(err => console.error('Sync error:', err));
   
   // Optional: Verify DB connection on startup
   try {
