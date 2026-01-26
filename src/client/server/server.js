@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 // Import the sequelize instance and the Model from your product.js
 const { sequelize, ProductModel } = require('./models/product'); 
+const ProductRoutes = require('./routes/productRoutes')
 
 const app = express();
 const PORT = 5001;
@@ -10,24 +11,8 @@ const PORT = 5001;
 app.use(cors()); // Allows React (port 3000) to talk to this server
 app.use(express.json()); // Allows server to read JSON bodies in POST requests
 
-// 2. API Routes
-app.get('/api/products', async (req, res) => {
-  try {
-    // Fetch all products from the 'products' table in the 'sys' database
-    const products = await ProductModel.findAll();
-    
-    // Log for debugging in your terminal
-    console.log(`Successfully fetched ${products.length} products.`);
-    
-    res.json(products);
-  } catch (error) {
-    console.error("Database Error:", error);
-    res.status(500).json({ 
-      message: "Internal Server Error", 
-      details: error.message 
-    });
-  }
-});
+// 2. routes
+app.use('/api/products/', ProductRoutes);
 
 // 3. Start Server
 app.listen(PORT, async () => {

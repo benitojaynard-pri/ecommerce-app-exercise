@@ -1,21 +1,29 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-const Counter = ({ counter, onAdd, onRemove, quantity }) => {
-  const truncate = (text, limit) => {
-    return text.length > limit ? text.substring(0, limit) + "..." : text;
+const Counter = ({ counter, onAdd, onRemove, quantity, product }) => {
+  const truncate = (str) => {
+    if (!str) return ""; // Return empty string if str is undefined/null
+    if (str.length > 80) {
+      return str.substring(0, 80) + "...";
+    }
+    return str;
   };
 
   return (
     <div className="card h-100 shadow-sm border-0">
-      <img 
+
+<Link to={`/product/${counter.id}`}>
+        <img 
         src={counter.image} 
-        alt={counter.title} 
+        alt={counter.name} 
         className="card-img-top p-3" 
-        style={{ height: "180px", objectFit: "contain" }} 
+        style={{ height: "180px", objectFit: "contain", cursor: 'cursor' }} 
       />
+      </Link>
       <div className="card-body d-flex flex-column">
         <h6 className="card-title fw-bold" style={{ minHeight: "40px" }}>
-          {truncate(counter.title, 40)}
+          {truncate(counter.name, 30)}
         </h6>
         <p className="card-text text-muted mb-1">P{counter.price}</p>
         <p className="card-text small text-secondary" style={{ height: "60px", overflow: "hidden" }}>

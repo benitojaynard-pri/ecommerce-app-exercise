@@ -1,33 +1,38 @@
 const express = require('express');
 const router = express.Router();
-const { sequelize, ProductModel } = require('./models/product'); 
+const { sequelize, ProductModel } = require('../models/product'); 
 const Joi = require('joi');
+const app = express();
 
 // --- FORM VALIDATION SCHEMA ---
 const productValidationSchema = Joi.object({
-    id: Joi.number().required(),
+    id: Joi.number().optional(),
     name: Joi.string().min(3).required(),
     description: Joi.string().required(),
     price: Joi.number().min(0).required(),
-    category: Joi.string().required(),
     image: Joi.string().uri().required(),
-    stock: Joi.number().min(0).required(),
-    rating: Joi.object({
-        rate: Joi.number().default(0),
-        count: Joi.number().default(0)
-    })
 });
 
 // 1. GET ALL PRODUCTS
 router.get('/', async (req, res) => {
     try {
-        await sequelize.authenticate();
-        const ProductModel = await ProductModel.find();
-        res.status(200).json(ProductModel);
-    } catch (err) {
-        res.status(500).json({ message: "Server error", error: err.message });
+      console.log("working all products.");
+      
+      // Fetch all products from the 'products' table in the 'sys' database
+      const products = await ProductModel.findAll();
+      
+      // Log for debugging in your terminal
+      console.log(`Successfully fetched ${products.length} products.`);
+      
+      res.json(products);
+    } catch (error) {
+      console.error("Database Error:", error);
+      res.status(500).json({ 
+        message: "Internal Server Error", 
+        details: error.message 
+      });
     }
-});
+  });
 
 // 2. ADD PRODUCT (with Validation)
 router.post('/add', async (req, res) => {
@@ -47,22 +52,35 @@ router.post('/add', async (req, res) => {
 
 // 3. UPDATE PRODUCT
 router.put('/update/:id', async (req, res) => {
-    // Validate the update data
+    // 1. Validation check (Siguraduhin na match ang fields sa schema mo)
     const { error } = productValidationSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.details[0].message });
 
     try {
-        // Find by the custom 'id' field in your schema, not the MongoDB _id
-        const updatedProduct = await Product.findOneAndUpdate(
-            { id: req.params.id }, 
-            req.body, 
-            { new: true } // returns the modified document rather than the original
+        const { id } = req.params;
+
+        // 2. Sequelize Update Syntax para sa MySQL
+        const [updatedRows] = await ProductModel.update(
+            {
+                id: req.params.id,
+                name: req.body.name,
+                price: req.body.price,
+                image: req.body.image,
+                description: req.body.description
+            },
+            { where: { id: id } } // 'id' column sa MySQL
         );
-        
-        if (!updatedProduct) return res.status(404).json({ message: "Product not found" });
-        res.status(200).json(updatedProduct);
+
+        if (updatedRows > 0) {
+            // Kunin ang bagong data para i-return sa frontend
+            const updatedProduct = await ProductModel.findByPk(id);
+            res.status(200).json(updatedProduct);
+        } else {
+            res.status(404).json({ message: "No changes made or product not found" });
+        }
     } catch (err) {
-        res.status(400).json({ message: "Update failed", error: err.message });
+        console.error("Update Error:", err);
+        res.status(500).json({ message: "Update failed", error: err.message });
     }
 });
 
@@ -74,6 +92,17 @@ router.delete('/delete/:id', async (req, res) => {
         res.status(200).json({ message: "Product deleted successfully" });
     } catch (err) {
         res.status(500).json({ message: "Delete failed", error: err.message });
+    }
+});
+
+// 5. Get By Id
+router.get('/:id', async (req, res) => {
+    try {
+        const product = await ProductModel.findByPk(req.params.id);
+        if (product) res.json(product);
+        else res.status(404).send("Not found");
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 

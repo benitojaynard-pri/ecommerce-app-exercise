@@ -2,20 +2,23 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.css";
 import NavBar from "./client/components/NavBar";
-import products from "./client/components/Products";
 import Main from "./Main";
 import Basket from "./Basket";
-
+import ProductList from './client/pages/ProductList';
+import ProductDetail from './client/pages/ProductDetailPage';
+console.log("Checking Component:", ProductDetail);
 
 function App() {
   // Inside your React Component
 const [products, setProducts] = useState([]);
 
 useEffect(() => {
-  fetch('http://localhost:5000/api/products')
-    .then(res => res.json())
-    .then(data => setProducts(data))
-    .catch(err => console.error("API Error:", err));
+  const fetchProducts = async () => {
+      const res = await fetch('http://localhost:5001/api/products');
+      const data = await res.json();
+      setProducts(data);
+  };
+  fetchProducts();
 }, []);
   const [cartItems, setCartItems] = useState([]);
   
@@ -62,6 +65,8 @@ useEffect(() => {
           <Route path="/cart" element={
             <Basket cartItems={cartItems} onAdd={onAdd} onRemove={onRemove} />
           } />
+           {/* <Route path="/" element={<ProductList />} /> */}
+           <Route path="/product/:id" element={<ProductDetail/>} />
         </Routes>
       </div>
     </Router>

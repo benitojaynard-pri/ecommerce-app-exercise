@@ -20,7 +20,7 @@ export default function Basket({ cartItems, onAdd, onRemove }) {
               {cartItems.length === 0 && <tr><td colSpan="4" className="text-center">Cart is empty</td></tr>}
               {cartItems.map((item) => (
                 <tr key={item.id} className="align-middle">
-                  <td>{item.title}</td>
+                  <td>{item.name}</td>
                   <td className="text-center">
                     <button onClick={() => onRemove(item)} className="btn btn-sm btn-outline-danger me-2">-</button>
                     <span className="fw-bold">{item.qty}</span>
